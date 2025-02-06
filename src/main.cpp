@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include "../tinyfiledialogs.h"
 #include <iostream>
 
 using namespace std;
