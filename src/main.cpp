@@ -4,12 +4,33 @@
 
 using namespace std;
 
+void convert_to_gray_scale(sf::Texture &texture) {
+  uint8_t width = texture.getSize().x;
+  uint8_t height = texture.getSize().y;
+  sf::Image image = texture.copyToImage();
+
+  for (uint8_t i = 0; i < width; i++) {
+    for (uint8_t j = 0; j < height; j++) {
+      
+      sf::Color color = image.getPixel({i, j});
+      
+      uint8_t gray =(uint8_t) (color.r * 0.3 + color.g * 0.59 + color.b * 0.11);
+      
+      image.setPixel({i, j}, {gray, gray, gray, color.a});
+      texture.update(image);
+    }
+  }
+
+}
+
 int main() {
   const string TITLE_WINDOW = "ASCII Generator";
 
   sf::RenderWindow window(sf::VideoMode({800, 600}), TITLE_WINDOW);
   sf::Texture texture(sf::Vector2u(200, 200));
   sf::Sprite sprite(texture);
+
+  
   bool imageLoaded = false;
    
   while (window.isOpen()) {
@@ -33,6 +54,10 @@ int main() {
 
           if (texture.loadFromFile(filePath)) {
             
+            texture.setSmooth(true);
+            
+            convert_to_gray_scale(texture);
+            
             sprite.setTexture(texture);
 
             // Ajustar escala
@@ -40,7 +65,7 @@ int main() {
             float scaleY = static_cast<float>(window.getSize().y) / texture.getSize().y;
             
             sprite.setScale({min(scaleX, scaleY), min(scaleX, scaleY)});
-
+            sprite.setColor(sf::Color::White);
             imageLoaded = true;
           } else {
             std::cout << "Erro ao carregar a imagem!" << std::endl;
