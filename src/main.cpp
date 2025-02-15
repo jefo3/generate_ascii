@@ -4,6 +4,21 @@
 
 using namespace std;
 
+uint8_t calculate_average_gray(sf::Texture &texture, uint8_t x, uint8_t y) {
+  uint8_t width = texture.getSize().x;
+  uint8_t height = texture.getSize().y;
+  uint8_t scale = 4;
+
+
+  uint8_t sum = 0;
+  uint8_t count = 0;
+
+  
+  
+
+  return sum / count;
+}
+
 void convert_to_gray_scale(sf::Texture &texture) {
   uint8_t width = texture.getSize().x;
   uint8_t height = texture.getSize().y;
@@ -23,8 +38,25 @@ void convert_to_gray_scale(sf::Texture &texture) {
 
 }
 
+void generate_ascii_art(sf::Texture &texture, const string &characters) {
+  uint8_t width = texture.getSize().x;
+  uint8_t height = texture.getSize().y;
+  sf::Image image = texture.copyToImage();
+
+  for (uint8_t i = 4; i < width; i*4) {
+    for (uint8_t j = 5; j < height; j*5) {
+      sf::Color color = image.getPixel({i, j});
+      uint8_t index = (color.r * characters.size()) / 255;
+      char character = characters[index];
+      std::cout << character;
+    }
+    std::cout << std::endl;
+  }
+}
+
 int main() {
   const string TITLE_WINDOW = "ASCII Generator";
+  const string CHARACTERS_ASCII = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
 
   sf::RenderWindow window(sf::VideoMode({800, 600}), TITLE_WINDOW);
   sf::Texture texture(sf::Vector2u(200, 200));
@@ -57,6 +89,8 @@ int main() {
             texture.setSmooth(true);
             
             convert_to_gray_scale(texture);
+
+            generate_ascii_art(texture, CHARACTERS_ASCII);
             
             sprite.setTexture(texture);
 
