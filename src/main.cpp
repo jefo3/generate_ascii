@@ -20,33 +20,33 @@ uint8_t calculate_average_gray(sf::Texture &texture, uint8_t x, uint8_t y) {
 }
 
 void convert_to_gray_scale(sf::Texture &texture) {
-  uint8_t width = texture.getSize().x;
-  uint8_t height = texture.getSize().y;
+  unsigned int width = texture.getSize().x;
+  unsigned int height = texture.getSize().y;
   sf::Image image = texture.copyToImage();
 
-  for (uint8_t i = 0; i < width; i++) {
-    for (uint8_t j = 0; j < height; j++) {
+  for (unsigned int i = 0; i < width; i++) {
+    for (unsigned int j = 0; j < height; j++) {
       
       sf::Color color = image.getPixel({i, j});
       
-      uint8_t gray =(uint8_t) (color.r * 0.3 + color.g * 0.59 + color.b * 0.11);
+      uint8_t gray =(uint8_t) (color.r * 0.21 + color.g * 0.72 + color.b * 0.07);
       
       image.setPixel({i, j}, {gray, gray, gray, color.a});
-      texture.update(image);
     }
   }
-
+  texture.update(image);
 }
 
 void generate_ascii_art(sf::Texture &texture, const string &characters) {
-  uint8_t width = texture.getSize().x;
-  uint8_t height = texture.getSize().y;
+  unsigned int width = texture.getSize().x;
+  unsigned int height = texture.getSize().y;
+  
   sf::Image image = texture.copyToImage();
 
-  for (uint8_t i = 4; i < width; i*4) {
-    for (uint8_t j = 5; j < height; j*5) {
+  for (unsigned int j = 0; j < height; j++) {
+    for (unsigned int i = 0; i < width; i++) {
       sf::Color color = image.getPixel({i, j});
-      uint8_t index = (color.r * characters.size()) / 255;
+      unsigned int index = (color.r * (characters.size() - 1)) / 255;
       char character = characters[index];
       std::cout << character;
     }
@@ -58,9 +58,10 @@ int main() {
   const string TITLE_WINDOW = "ASCII Generator";
   const string CHARACTERS_ASCII = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
 
-  sf::RenderWindow window(sf::VideoMode({800, 600}), TITLE_WINDOW);
-  sf::Texture texture(sf::Vector2u(200, 200));
+  sf::RenderWindow window(sf::VideoMode({1024, 1024}), TITLE_WINDOW);
+  sf::Texture texture(sf::Vector2u(800, 600));
   sf::Sprite sprite(texture);
+  
 
   
   bool imageLoaded = false;
@@ -71,14 +72,14 @@ int main() {
         window.close();
       }
       if (event->is<sf::Event::MouseButtonPressed>()) {
-        // Abrir o diálogo de seleção de arquivos
+        
         const char* filePath = tinyfd_openFileDialog(
-            "Selecione uma imagem", // Título da janela
-            "",                    // Caminho inicial
-            1,                     // Número de filtros
-            (const char*[]){ "*.png", "*.jpg", "*.jpeg", "*.bmp" }, // Filtros de imagem
-            "Arquivos de Imagem",  // Descrição do filtro
-            0                      // Permitir múltiplos arquivos
+            "Selecione uma imagem", 
+            "",                    
+            1,                     
+            (const char*[]){ "*.png", "*.jpg", "*.jpeg", "*.bmp" }, 
+            "Arquivos de Imagem",  
+            0                     
         );
 
         if (filePath) {
@@ -87,19 +88,19 @@ int main() {
           if (texture.loadFromFile(filePath)) {
             
             texture.setSmooth(true);
-            
-            convert_to_gray_scale(texture);
-
-            generate_ascii_art(texture, CHARACTERS_ASCII);
-            
             sprite.setTexture(texture);
+           
+            convert_to_gray_scale(texture); 
+        
+            generate_ascii_art(texture, CHARACTERS_ASCII);
 
-            // Ajustar escala
-            float scaleX = static_cast<float>(window.getSize().x) / texture.getSize().x;
-            float scaleY = static_cast<float>(window.getSize().y) / texture.getSize().y;
             
-            sprite.setScale({min(scaleX, scaleY), min(scaleX, scaleY)});
-            sprite.setColor(sf::Color::White);
+            // // Ajustar escala
+            // float scaleX = static_cast<float>(window.getSize().x) / texture.getSize().x;
+            // float scaleY = static_cast<float>(window.getSize().y) / texture.getSize().y;
+            
+            // sprite.setScale({min(scaleX, scaleY), min(scaleX, scaleY)});
+            // sprite.setColor(sf::Color::White);
             imageLoaded = true;
           } else {
             std::cout << "Erro ao carregar a imagem!" << std::endl;
