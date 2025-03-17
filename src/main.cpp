@@ -4,21 +4,6 @@
 
 using namespace std;
 
-uint8_t calculate_average_gray(sf::Texture &texture, uint8_t x, uint8_t y) {
-  uint8_t width = texture.getSize().x;
-  uint8_t height = texture.getSize().y;
-  uint8_t scale = 4;
-
-
-  uint8_t sum = 0;
-  uint8_t count = 0;
-
-  
-  
-
-  return sum / count;
-}
-
 void convert_to_gray_scale(sf::Texture &texture) {
   unsigned int width = texture.getSize().x;
   unsigned int height = texture.getSize().y;
@@ -61,8 +46,6 @@ int main() {
   sf::RenderWindow window(sf::VideoMode({1024, 1024}), TITLE_WINDOW);
   sf::Texture texture(sf::Vector2u(800, 600));
   sf::Sprite sprite(texture);
-  
-
   
   bool imageLoaded = false;
    
